@@ -14,6 +14,13 @@ parse_git_dirty() {
   fi
 }
 
+get_npm_package_version() {
+  local JSON=''
+  if [[ -f 'package.json' ]]; then
+    echo $(node -e "var pkg = require('./package.json').version; if (pkg) console.log('(npm:'+pkg+')')")
+  fi
+}
+
 function git_prompt_info() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
   echo "$ZSH_THEME_GIT_PROMPT_PREFIX$(parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
@@ -21,7 +28,7 @@ function git_prompt_info() {
 
 
 local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ %s)"
-PROMPT='${ret_status}%{$fg_bold[green]%}%p $(collapse_pwd) %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+PROMPT='${ret_status}%{$fg_bold[green]%}%p $(collapse_pwd) %{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%}%{$fg_bold[blue]%} $(get_npm_package_version)%{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[blue]%})"
