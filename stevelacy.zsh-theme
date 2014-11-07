@@ -17,7 +17,7 @@ parse_git_dirty() {
 get_npm_package_version() {
   local JSON=''
   if [[ -f 'package.json' ]]; then
-    echo $(node -e "var pkg = require('./package.json').version; if (pkg) console.log('(npm:'+pkg+')')")
+    echo $(node -e "var pkg; try {pkg = require('./package.json').version; } catch(e){ console.log('(npm:ERROR: invalid JSON package.json)')}; if (pkg) console.log('(npm:'+pkg+')')")
   fi
 }
 
@@ -28,7 +28,7 @@ function git_prompt_info() {
 
 
 local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ %s)"
-PROMPT='${ret_status}%{$fg_bold[green]%}%p $(collapse_pwd) %{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%}%{$fg_bold[blue]%} $(get_npm_package_version)%{$reset_color%}'
+PROMPT='${ret_status}%{$fg_bold[green]%}%p $(collapse_pwd) %{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%}%{$fg_bold[blue]%} $(get_npm_package_version)$ %{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[blue]%})"
